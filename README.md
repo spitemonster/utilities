@@ -4,7 +4,7 @@ A collection of utility scripts, SCSS partials and mixins and other goodies that
 
 ## Javascript
 
-### asynchronouseImageLoading.js
+### asynchronousImageLoading.js
 Utility to be utilized with the image optimizer that I've built to automate background loading of images and use of srcSet to increase page load speed and minimize page weight. On the HTML side, it expects an image tag in this format:
 
 ```HTML
