@@ -1,0 +1,34 @@
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+@mixin fluidtype($min, $max, $fluidheight, $minvw: 400px, $maxvw: 2560px) {
+  $min-val: strip-unit($min);
+  $max-val: strip-unit($max);
+  $wmin: strip-unit($minvw);
+  $wmax: strip-unit($maxvw);
+  $size: calc(#{$min} + (#{$max-val} - #{$min-val}) * (100vw - #{$minvw}) / (#{$wmax} - #{$wmin}));
+
+  @media (max-width: $minvw) {
+    font-size: $min;
+    line-height: calc(#{$min} * #{$fluidheight});
+  }
+
+  @media (min-width: $minvw) and (max-width: $maxvw) {
+    font-size: $size;
+    @if $fluidheight > 0 {
+      line-height: calc(#{$size} * #{$fluidheight});
+    } @else {
+      line-height: inherit;
+    }
+  }
+
+  @media (min-width: $maxvw) {
+    font-size: $max;
+    line-height: calc(#{$max} * #{$fluidheight});
+  }
+}
