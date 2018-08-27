@@ -8,57 +8,51 @@ let options = {
 // create our intersection observer and set the function that runs when intersecting
 let observer = new IntersectionObserver((entries, observer) => {
   entries.forEach((entry) => {
-    if (entry.isIntersecting) {
+    if (entry.isIntersecting && entry.target.dataset.srcset) {
       setSrcSet(entry.target)
     }
   })
 }, options)
 
+// we want to find the image that is closest to the size of the image box without being too big, so this function accomplishes that.
+// get all async images, split into arrays for sizes and image urls, loop through sizes, find the one nearest to image box size without being bigger, set index based on which one that is. if there is only one size, we just use the one size.
+
 function setSrcSet (item) {
-  // read the datasrcset
-  let srcSet = item.dataset.srcset
-  // split srcSet into an array
-  let imgSrc = srcSet.split(',')
-  // create empty object to populate with sizes and urls
-  let sizes = {}
-  // get browser width to load smallest image possible
-  let width = window.innerWidth
-  let sizeIndex
   let ratio = 0
-  let sizeKeys = []
-  // create new Image element to begin the background download
+  let srcSet = item.dataset.srcset
+  let images = []
+  let sizes = []
+  let targetWidth = item.offsetWidth
   let downloadingImage = new Image()
+  let index = 0
+  let imgSrc = srcSet.split(',').map((item) => {
+    return item.trim()
+  })
 
-  // get each size from the imgSrc array and use the size as the key and the url as the value and also push the size to an array for the later loop
   imgSrc.forEach((img) => {
-    let size = img.trim().split(' ')[1].replace('w', '')
-    let url = img.trim().split(' ')[0]
-    sizeKeys.push(size)
-    sizes[size.toString()] = url
+    images.push(img.split(' ')[0])
+    sizes.push(Number(img.split(' ')[1].replace('w', '')))
   })
 
-  // loop through all the keys and find the one with the highest ratio to the window width, unless we're at retina size in which case load the retina image
-  sizeKeys.forEach((key) => {
-    let k = Number(key)
-    if (((k / width) > ratio && width > k) || k >= 2560) {
-      ratio = k / width
-      sizeIndex = key
+  if (sizes.length > 1) {
+    for (let i = 0; i < sizes.length; i++) {
+      let s = sizes[i] / targetWidth
+
+      if (s > ratio && s <= 1) {
+        ratio = s
+        index = i
+      }
     }
-  })
+  }
 
-  // when the img src is finished downloading (which is why we pull the biggest image since it takes the longest)
-  // set the srcset attribute to the data we grabbed above, remove class and remove the data attribute
   downloadingImage.onload = function () {
     item.setAttribute('srcset', srcSet)
     item.classList.remove('asyncImage')
     item.removeAttribute('data-srcset')
   }
-
-  // set the src to start the image download
-  downloadingImage.src = sizes[sizeIndex]
+  downloadingImage.src = images[index]
 }
 
-// set observer to watch all images with the classlist outlined above
 for (let i = 0; i < asyncImgs.length; i++) {
   observer.observe(asyncImgs[i])
 }
