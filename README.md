@@ -16,7 +16,7 @@ Utility to be utilized with the image optimizer that I've built to automate back
                                      /target--image-retina.jpg 2560w" />
 ```
 
-It is up to the user to include the correct URLs and add an alt tag, but aside from that the script automates loading the srcSet in the background
+It is up to the user to include the correct URLs and add an alt tag, but aside from that the script automates loading the srcSet in the background by preloading the most appropriately sized image.
 
 ## SCSS
 
@@ -58,3 +58,7 @@ compiles to:
 ```
 
 The magic (and ugliness) is in the `@media (min-width: 400px) and (max-width: 2560px)`. It's ugly, but it works and I haven't run into a situation where it *didn't* work precisely as I expected. Recommended use is to change the viewport max and min as well. I had no reason to use those defaults other than using a 2560px monitor at work.
+
+### autogrid.scss
+
+Honestly kind of useless. Give the mixin a minimum width and a number of cells, and using flexbox or CSS Grid (depending on support), it makes a multi-column grid that, below the min width, breaks into rows instead. This is the kind of thing Flexbox does really well on its own, but I love taking something simple and making it complicated.
