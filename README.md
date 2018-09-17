@@ -18,6 +18,19 @@ Utility to be utilized with the image optimizer that I've built to automate back
 
 It is up to the user to include the correct URLs and add an alt tag, but aside from that the script automates loading the srcSet in the background by preloading the most appropriately sized image.
 
+### lazyload.js
+
+Uses a similar syntax to the asyncImageLoading script, but bypasses the use of an async image. Basically just loads the image once it's in the viewport, preventing any unnecessary image loading of any size.
+
+```HTML
+<img class="lazy-load" data-src="/target--image-async.jpg"
+                        data-srcSet="/target--image-xsmall.jpg 320w,
+                                     /target--image-small.jpg 480w,
+                                     /target--image-medium.jpg 960w,
+                                     /target--image-large.jpg 1280w,
+                                     /target--image-retina.jpg 2560w" />
+```
+
 ## SCSS
 
 ### reset.scss
